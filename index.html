@@ -1,0 +1,670 @@
+<!DOCTYPE html>
+<html lang="it" data-theme="light">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ForumPA ENIA — Workspace scaletta interattiva</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Manrope:wght@400;500;700;800&family=Fraunces:opsz,wght@9..144,600;9..144,700&display=swap" rel="stylesheet">
+  <style>
+    :root,[data-theme="light"]{
+      --bg:#f6f5f1;--surface:#fcfbf8;--surface2:#f0ece6;--card:#fffdfa;--border:#d7d0c8;
+      --text:#201d19;--muted:#67635e;--faint:#8a847b;--primary:#0b6a6f;--primary2:#155c91;--accent:#c86d1a;
+      --ok:#2f7a3e;--warn:#8d4c1d;--shadow:0 14px 40px rgba(25,30,35,.10);--radius:18px;
+      --space:clamp(14px,2vw,22px);--max:1260px;
+    }
+    [data-theme="dark"]{
+      --bg:#171614;--surface:#1e1c19;--surface2:#24211d;--card:#211f1c;--border:#3c3832;
+      --text:#ece7df;--muted:#b3ada4;--faint:#8d877e;--primary:#63b4ba;--primary2:#7fb4e2;--accent:#ef9e52;
+      --ok:#8dd39a;--warn:#efb07a;--shadow:0 14px 40px rgba(0,0,0,.35);
+    }
+    *{box-sizing:border-box}
+    html{scroll-behavior:smooth}
+    body{
+      margin:0;font-family:Manrope,system-ui,sans-serif;background:
+      radial-gradient(circle at top right, rgba(11,106,111,.10), transparent 24%),
+      radial-gradient(circle at left 20%, rgba(21,92,145,.08), transparent 18%), var(--bg);
+      color:var(--text);line-height:1.5
+    }
+    a{color:var(--primary)}
+    .wrap{max-width:var(--max);margin:0 auto;padding:24px}
+    .skip{position:absolute;left:-9999px}
+    .skip:focus{left:12px;top:12px;background:var(--card);padding:8px 12px;border-radius:10px;z-index:10}
+    header.hero{padding:34px 0 20px}
+    .topbar{display:flex;gap:14px;justify-content:space-between;align-items:center;flex-wrap:wrap;margin-bottom:22px}
+    .brand{display:flex;gap:14px;align-items:center}
+    .logo{width:56px;height:56px;border-radius:16px;background:linear-gradient(135deg,var(--primary),var(--primary2));display:grid;place-items:center;color:#fff;box-shadow:var(--shadow)}
+    .logo svg{width:32px;height:32px}
+    .chip{display:inline-flex;align-items:center;gap:8px;padding:8px 12px;border:1px solid var(--border);background:rgba(255,255,255,.45);border-radius:999px;color:var(--muted);font-size:14px}
+    h1,h2,h3,h4{margin:0;line-height:1.08}
+    h1{font-family:Fraunces,serif;font-size:clamp(38px,6vw,72px);max-width:10ch}
+    .lead{font-size:clamp(17px,2vw,20px);max-width:76ch;color:var(--muted);margin-top:16px}
+    .hero-grid{display:grid;grid-template-columns:1.15fr .85fr;gap:22px;align-items:start}
+    .panel{background:linear-gradient(180deg,rgba(255,255,255,.6),rgba(255,255,255,.25));border:1px solid var(--border);border-radius:var(--radius);box-shadow:var(--shadow)}
+    .hero-card{padding:22px}
+    .stats{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-top:18px}
+    .stat{padding:14px;border-radius:16px;background:var(--card);border:1px solid var(--border)}
+    .stat strong{display:block;font-size:28px}
+    nav.sticky{position:sticky;top:0;z-index:20;backdrop-filter:blur(10px);background:color-mix(in srgb,var(--bg) 84%, transparent);border-block:1px solid rgba(0,0,0,.05)}
+    .navin{max-width:var(--max);margin:0 auto;padding:12px 24px;display:flex;gap:10px;flex-wrap:wrap;align-items:center;justify-content:space-between}
+    .links{display:flex;gap:10px;flex-wrap:wrap}
+    .links a,.btn{display:inline-flex;align-items:center;gap:8px;padding:10px 14px;border-radius:999px;border:1px solid var(--border);background:var(--card);text-decoration:none;color:var(--text);font-weight:700}
+    .btn.primary{background:linear-gradient(135deg,var(--primary),var(--primary2));color:#fff;border-color:transparent}
+    .theme{min-width:44px;min-height:44px}
+    main{padding:22px 0 60px}
+    section{margin:26px 0 34px}
+    .section-head{display:flex;justify-content:space-between;gap:18px;align-items:end;flex-wrap:wrap;margin-bottom:16px}
+    .section-head p{max-width:80ch;color:var(--muted);margin:8px 0 0}
+    .grid{display:grid;grid-template-columns:1fr 1fr;gap:18px}
+    .card{background:var(--card);border:1px solid var(--border);border-radius:var(--radius);padding:18px;box-shadow:var(--shadow)}
+    .card h3{font-size:24px;margin-bottom:10px}
+    .card h4{font-size:18px;margin:10px 0 8px}
+    .muted{color:var(--muted)}
+    .small{font-size:14px;color:var(--faint)}
+    .toggle{width:100%;text-align:left;padding:0;background:none;border:none;color:inherit}
+    .toggle-row{display:flex;justify-content:space-between;gap:12px;align-items:center}
+    .pillrow{display:flex;gap:8px;flex-wrap:wrap;margin:10px 0 6px}
+    .pill{padding:6px 10px;border-radius:999px;background:var(--surface2);font-size:13px;border:1px solid var(--border)}
+    .content{display:none;padding-top:14px}
+    .card.open .content{display:block}
+    .list{display:grid;gap:10px;padding:0;margin:0}
+    .list li{list-style:none;padding:12px 12px 12px 14px;border-left:4px solid var(--primary);background:var(--surface);border-radius:12px}
+    .alt{border-left-color:var(--accent)}
+    .ok{border-left-color:var(--ok)}
+    .warn{border-left-color:var(--warn)}
+    .timeline{display:grid;gap:12px}
+    .slot{display:grid;grid-template-columns:90px 1fr;gap:12px;align-items:start;padding:12px;border-radius:14px;background:var(--surface);border:1px solid var(--border)}
+    .slot time{font-weight:800;color:var(--primary)}
+    .tablewrap{overflow:auto}
+    .table{width:100%;border-collapse:separate;border-spacing:0 8px}
+    .table th{text-align:left;color:var(--muted);font-size:13px;padding:0 10px}
+    .table td{background:var(--surface);padding:12px 10px;vertical-align:top;border-top:1px solid var(--border);border-bottom:1px solid var(--border)}
+    .table td:first-child{border-left:1px solid var(--border);border-radius:12px 0 0 12px}
+    .table td:last-child{border-right:1px solid var(--border);border-radius:0 12px 12px 0}
+    details{background:var(--surface);border:1px solid var(--border);border-radius:14px;padding:14px}
+    summary{cursor:pointer;font-weight:800}
+    textarea.notes{
+      width:100%;min-height:90px;border:1px solid var(--border);border-radius:14px;padding:12px;background:var(--card);
+      color:var(--text);font:inherit;resize:none;overflow:hidden
+    }
+    .note-toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:10px}
+    .note-block{margin-top:12px;padding:14px;border:1px solid var(--border);border-radius:14px;background:var(--card)}
+    .note-head{display:flex;justify-content:space-between;align-items:center;gap:10px;margin-bottom:8px}
+    .note-title{font-weight:800}
+    .attachments{display:grid;gap:10px}
+    .attachment-item{display:grid;grid-template-columns:1fr auto;gap:10px;padding:12px;border:1px solid var(--border);border-radius:14px;background:var(--surface)}
+    .attachment-item input,.attachment-item textarea{
+      width:100%;border:1px solid var(--border);border-radius:12px;padding:10px;background:var(--card);color:var(--text);font:inherit
+    }
+    .attachment-item textarea{min-height:44px;resize:none;overflow:hidden}
+    .two-col{display:grid;grid-template-columns:1.15fr .85fr;gap:18px}
+    .footer{padding:18px;border-top:1px solid var(--border);color:var(--muted)}
+    .tag{font-size:12px;text-transform:uppercase;letter-spacing:.08em;color:var(--primary);font-weight:800}
+    .toolbar{display:flex;gap:10px;flex-wrap:wrap;margin-top:12px}
+    .mini{font-size:13px;color:var(--muted)}
+    .inputline{
+      width:100%;border:1px solid var(--border);border-radius:12px;padding:10px;background:var(--card);color:var(--text);font:inherit
+    }
+    @media (max-width: 980px){.hero-grid,.grid,.two-col{grid-template-columns:1fr}.stats{grid-template-columns:1fr 1fr}.slot{grid-template-columns:1fr}}
+    @media (max-width: 620px){.wrap,.navin{padding-inline:16px}.stats{grid-template-columns:1fr} h1{max-width:12ch}}
+  </style>
+</head>
+<body>
+<a class="skip" href="#contenuto">Salta al contenuto</a>
+
+<header class="hero wrap">
+  <div class="topbar">
+    <div class="brand">
+      <div class="logo" aria-label="Logo ENIA">
+        <svg viewBox="0 0 48 48" fill="none" stroke="currentColor" stroke-width="3" aria-hidden="true">
+          <path d="M9 35V13h7l8 12 8-12h7v22"/>
+          <path d="M16 24h16" opacity=".7"/>
+        </svg>
+      </div>
+      <div>
+        <div class="tag">Bozza collaborativa</div>
+        <strong>ForumPA ENIA / WEnia</strong>
+      </div>
+    </div>
+    <div class="chip">Workspace condivisibile e aggiornabile per 1-2 mesi</div>
+  </div>
+
+  <div class="hero-grid">
+    <div class="hero-card panel">
+      <h1>Scaletta interattiva per evento, stand e plenaria</h1>
+      <p class="lead">
+        Pagina unica condivisibile con tre sezioni operative, due ipotesi narrative per ciascun blocco,
+        riferimenti normativi utili alla platea PA, idee economiche e attivabili per 3 giornate di stand,
+        e spazi editabili per integrare nomi, materiali, domande e contributori.
+      </p>
+      <div class="stats">
+        <div class="stat"><span class="small">Sezioni</span><strong>3</strong><span class="small">Evento / Stand / Plenaria</span></div>
+        <div class="stat"><span class="small">Giornate stand</span><strong>3</strong><span class="small">10:00–18:00</span></div>
+        <div class="stat"><span class="small">Format</span><strong>30'</strong><span class="small">slot modulari e ripetibili</span></div>
+      </div>
+    </div>
+
+    <aside class="hero-card panel">
+      <h3>Come usare la pagina</h3>
+      <ul class="list" style="margin-top:12px">
+        <li class="ok"><strong>Apri/chiudi</strong> i blocchi per navigare rapidamente la scaletta.</li>
+        <li class="alt"><strong>Compila</strong> le note durante le riunioni di avanzamento.</li>
+        <li><strong>Usa</strong> la sezione allegati per materiali esterni, drive e documenti condivisi.</li>
+        <li class="warn"><strong>Conserva</strong> una struttura stretta: contenuti per PA, governance, rischi, servizi, impatti e comunicazione.</li>
+      </ul>
+      <div class="pillrow">
+        <span class="pill">Tono: concreto</span>
+        <span class="pill">Target: PA</span>
+        <span class="pill">Formato: intervista</span>
+        <span class="pill">Persistenza locale</span>
+      </div>
+    </aside>
+  </div>
+</header>
+
+<nav class="sticky" aria-label="Navigazione sezioni">
+  <div class="navin">
+    <div class="links">
+      <a href="#evento">Evento 1 ora</a>
+      <a href="#stand">Stand 3 giorni</a>
+      <a href="#plenaria">Seduta plenaria</a>
+      <a href="#fonti">Normativa e materiali</a>
+    </div>
+    <button class="btn theme" data-theme-toggle aria-label="Passa al tema scuro">◐</button>
+  </div>
+</nav>
+
+<main id="contenuto" class="wrap">
+
+  <section id="evento">
+    <div class="section-head">
+      <div>
+        <div class="tag">Sezione 1</div>
+        <h2>Evento di un'ora</h2>
+        <p>
+          Impianto per una platea di amministrazioni pubbliche: chi è ENIA, quali servizi porta alla PA
+          e quali scelte concrete abilita oggi, con stile asciutto, orientato a procurement, governo dei progetti,
+          conformità, cittadini e fiducia.
+        </p>
+      </div>
+      <a class="btn primary" href="#fonti">Vedi basi normative</a>
+    </div>
+
+    <div class="two-col">
+      <div class="card">
+        <h3>Architettura complessiva dei 60 minuti</h3>
+        <div class="timeline">
+          <div class="slot"><time>00–05</time><div><strong>Apertura moderata</strong><br><span class="muted">Contesto ForumPA, bisogno delle PA, promessa del panel: non “metafisica dell'AI”, ma scelte, servizi, rischi, governance, impatti.</span></div></div>
+          <div class="slot"><time>05–22</time><div><strong>Blocco 1 — ENIA chi siamo</strong><br><span class="muted">Due segmenti di intervista: natura della fondazione, riconoscimento come ente di ricerca, capacità di operare con PA e imprese, visione civica e tutela dei cittadini.</span></div></div>
+          <div class="slot"><time>22–47</time><div><strong>Blocco 2 — Cosa facciamo per la PA</strong><br><span class="muted">Tre nuclei: servizi ICT per governo dei progetti AI; compliance, rischio e formazione; prospettive per enti nazionali, locali e comunità.</span></div></div>
+          <div class="slot"><time>47–56</time><div><strong>Blocco 3 — Casi, domande, call to action</strong><br><span class="muted">Intervista finale incrociata: che cosa può fare una PA entro 90 giorni con ENIA e partner.</span></div></div>
+          <div class="slot"><time>56–60</time><div><strong>Chiusura</strong><br><span class="muted">Invito allo stand, raccolta contatti, rimando a materiali video/social e prossimi tavoli.</span></div></div>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Regole editoriali</h3>
+        <ul class="list">
+          <li><strong>Ogni relatore risponde a domande</strong>, non fa una relazione lineare: aumenta ritmo, leggibilità e memorabilità.</li>
+          <li class="alt"><strong>Ogni risposta deve chiudersi con una prova</strong>: servizio, obbligo, caso d'uso, rischio evitato, beneficio per cittadino o ufficio.</li>
+          <li><strong>Niente astrattezze</strong>: parole guida “procurement”, “governo del progetto”, “responsabilità”, “dati”, “sicurezza”, “fiducia”, “open data”.</li>
+          <li class="ok"><strong>Ogni 8–10 minuti un cambio di voce</strong>, di formato o di supporto visuale.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid">
+      <article class="card open accordion">
+        <button class="toggle" aria-expanded="true">
+          <div class="toggle-row">
+            <div>
+              <h3>ENIA chi siamo</h3>
+              <div class="pillrow">
+                <span class="pill">2 interventi</span><span class="pill">max 10'</span><span class="pill">istituzionale + valoriale</span>
+              </div>
+            </div>
+            <span>▾</span>
+          </div>
+        </button>
+        <div class="content">
+          <h4>Contenuti chiave</h4>
+          <ul class="list">
+            <li><strong>Intervento A — Profilo istituzionale</strong>: storia e traiettoria di ENIA, con passaggio chiave sul fatto che da dicembre 2025 ENIA è fondazione; il messaggio da rendere è che non si tratta solo di advocacy culturale, ma di un soggetto strutturato che può operare in ricerca, servizi, partnership e supporto operativo a PA e imprese.</li>
+            <li class="alt"><strong>Da rendere con precisione</strong>: capacità di agire come ente di ricerca; possibilità di erogare servizi a aziende e PA; iscrizione al MEPA; possibilità di partecipare a partnership con fornitori di tecnologie e consulenze ICT.</li>
+            <li><strong>Intervento B — Visione etica e civica</strong>: AI come infrastruttura di servizio pubblico orientata a tutela dei cittadini, difesa dei consumatori, trasparenza, accountability e qualità dell'esperienza amministrativa.</li>
+          </ul>
+
+          <h4>Sceneggiatura — Ipotesi 1</h4>
+          <ul class="list">
+            <li>Domanda 1: “Che cosa cambia, per una PA, sapere che ENIA è oggi una fondazione e un ente di ricerca?”</li>
+            <li>Domanda 2: “Perché una PA dovrebbe cercare un soggetto come ENIA prima ancora del semplice fornitore tecnologico?”</li>
+            <li>Domanda 3: “Che cosa significa difendere cittadini e consumatori quando si introducono sistemi di AI nei servizi pubblici?”</li>
+          </ul>
+
+          <h4>Sceneggiatura — Ipotesi 2</h4>
+          <ul class="list">
+            <li class="ok">Formato “doppia lente”: prima 5 minuti di identità istituzionale, poi 5 minuti di “manifesto pratico” su AI affidabile per la PA.</li>
+            <li>Tre parole per chiudere il blocco: <em>ricerca</em>, <em>governo</em>, <em>fiducia</em>.</li>
+          </ul>
+
+          <details>
+            <summary>Note operative da completare</summary>
+            <div class="note-toolbar">
+              <button class="btn" data-add-note data-target="notes-evento-1">+ nuova nota</button>
+            </div>
+            <div id="notes-evento-1" class="notes-area" data-notes-area></div>
+          </details>
+        </div>
+      </article>
+
+      <article class="card accordion">
+        <button class="toggle" aria-expanded="false">
+          <div class="toggle-row">
+            <div>
+              <h3>ENIA cosa facciamo per la PA</h3>
+              <div class="pillrow">
+                <span class="pill">3 interventi</span><span class="pill">servizi + compliance + prospettive</span>
+              </div>
+            </div>
+            <span>▸</span>
+          </div>
+        </button>
+        <div class="content">
+          <h4>1. Servizi ICT e governo dei progetti</h4>
+          <ul class="list">
+            <li><strong>Messaggio</strong>: ENIA aiuta PA e aziende a governare progetti digitali che implementano AI, non soltanto a “comprare tecnologia”.</li>
+            <li class="alt"><strong>Fuochi</strong>: definizione obiettivi, requisiti, valutazione fornitori, monitoraggio del ciclo di vita, misurazione dei risultati, interfaccia con partner tecnologici.</li>
+          </ul>
+
+          <h4>2. Visione etica e adempimenti</h4>
+          <ul class="list">
+            <li><strong>Contenuti da approfondire</strong>: centralità del cittadino; governo organizzativo prima della soluzione tecnica; analisi, valutazione e controllo dei rischi su sicurezza, privacy, qualità del dato, impatti organizzativi e conformità normativa.</li>
+            <li class="warn"><strong>Linea di servizio</strong>: sandbox valutative; assessment ex ante; formazione per dipendenti pubblici; giurie di comunità; accompagnamento alle scelte di procurement e sviluppo.</li>
+          </ul>
+
+          <h4>3. Prospettive</h4>
+          <ul class="list">
+            <li><strong>Breve termine</strong>: supporto già oggi a PA nazionali e locali, soprattutto quelle più deboli nella capacità di impostare scelte consapevoli.</li>
+            <li class="ok"><strong>Medio termine</strong>: servizi ai territori, giurie di comunità, modelli open-data-based, alleanze con consulenza e tecnologia per casi d'uso concretamente attivabili.</li>
+          </ul>
+
+          <h4>Sceneggiatura — Ipotesi 1</h4>
+          <p class="muted">Intervista sequenziale con un moderatore pubblico o partner: “da dove parte una PA?”, “quali rischi non può ignorare?”, “che supporto concreto può avere in 3, 6, 12 mesi?”</p>
+
+          <h4>Sceneggiatura — Ipotesi 2</h4>
+          <p class="muted">Formato “problema → risposta ENIA → prova” ripetuto tre volte: procurement, governance del rischio, sviluppo futuro dei servizi.</p>
+
+          <details>
+            <summary>Note operative da completare</summary>
+            <div class="note-toolbar">
+              <button class="btn" data-add-note data-target="notes-evento-2">+ nuova nota</button>
+            </div>
+            <div id="notes-evento-2" class="notes-area" data-notes-area></div>
+          </details>
+        </div>
+      </article>
+    </div>
+  </section>
+
+  <section id="stand">
+    <div class="section-head">
+      <div>
+        <div class="tag">Sezione 2</div>
+        <h2>Stand — 3 giornate attive</h2>
+        <p>
+          Lo stand deve lavorare come un micro-palinsesto: tavolo come punto d'ascolto e accoglienza,
+          due postazioni interattive come demo e raccolta insight, divanetto come set per interviste brevi,
+          social clip e mini talk. L'obiettivo non è presidiare lo spazio: è generare soste, conversazioni, contenuti e contatti.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Uso intelligente dello spazio</h3>
+        <div class="tablewrap">
+          <table class="table">
+            <thead>
+              <tr><th>Elemento</th><th>Funzione proposta</th><th>Budget/tono</th></tr>
+            </thead>
+            <tbody>
+              <tr><td><strong>Tavolo</strong></td><td>Front desk leggero, agenda del giorno, QR per iscrizione a demo/interviste, materiali essenziali, foglio “domanda del giorno”.</td><td>Economico, ordinato, presidio umano.</td></tr>
+              <tr><td><strong>Postazione 1</strong></td><td>Demo “Mappa dei rischi AI per la PA”: percorso guidato con 5 domande, output finale “profilo di maturità / attenzione”.</td><td>Accattivante, utile, replicabile.</td></tr>
+              <tr><td><strong>Postazione 2</strong></td><td>Demo “Servizi ENIA per la PA”: card navigabili per procurement, governance, formazione, sandbox, giurie di comunità, open data.</td><td>Chiaro, didattico, orientato al bisogno.</td></tr>
+              <tr><td><strong>Due sedie</strong></td><td>Micro-colloqui di 10 minuti con PA interessate, slot prenotabili, raccolta fabbisogni.</td><td>Basso costo, alta resa relazionale.</td></tr>
+              <tr><td><strong>Divanetto</strong></td><td>Mini set interviste social e video-pillole: 5–8 minuti, look informale ma autorevole.</td><td>Molto forte per attrarre attenzione.</td></tr>
+            </tbody>
+          </table>
+        </div>
+      </div>
+
+      <div class="card">
+        <h3>Format attrattivi e sostenibili</h3>
+        <ul class="list">
+          <li><strong>Intervista lampo “3 domande alla PA”</strong>: format continuo, facile da registrare e rilanciare su LinkedIn, YouTube e Facebook.</li>
+          <li class="alt"><strong>Quiz operativo</strong>: “Quanto è pronta la tua amministrazione per l’AI?” con esito visivo semplice e condivisibile.</li>
+          <li><strong>Angolo materiali</strong>: schede A4 pieghevoli, QR code a video, report e pagine ENIA, niente brochure pesanti.</li>
+          <li class="ok"><strong>Corner social</strong>: una lavagnetta con tema del giorno e hashtag, utile per foto, stories e clipping.</li>
+        </ul>
+      </div>
+    </div>
+
+    <div class="grid" style="margin-top:18px">
+      <article class="card">
+        <h3>Palinsesto 3 giorni</h3>
+        <div class="timeline">
+          <div class="slot"><time>Giorno 1</time><div><strong>Identità e ascolto</strong><br><span class="muted">Mattina: accoglienza, check-in, raccolta domande. Pomeriggio: 2 interviste brevi, 1 demo guidata, 1 mini talk su chi è ENIA e cosa porta alla PA.</span></div></div>
+          <div class="slot"><time>Giorno 2</time><div><strong>Normativa e rischio</strong><br><span class="muted">Mattina: focus compliance e obblighi. Pomeriggio: sandbox, valutazione rischio, privacy, data governance, formazione dipendenti pubblici, domande dal pubblico.</span></div></div>
+          <div class="slot"><time>Giorno 3</time><div><strong>Prospettive e partnership</strong><br><span class="muted">Mattina: servizi per PA locali e territori. Pomeriggio: open data, giurie di comunità, alleanze con partner tecnologici e consulenziali, call to action finale.</span></div></div>
+        </div>
+      </article>
+
+      <article class="card">
+        <h3>Slot di 30 minuti</h3>
+        <ul class="list">
+          <li><strong>00–05</strong>: accoglienza, QR check-in, domanda del giorno.</li>
+          <li class="alt"><strong>05–15</strong>: intervista breve con relatore/ospite.</li>
+          <li><strong>15–22</strong>: demo o caso d’uso sul tema del giorno.</li>
+          <li class="ok"><strong>22–27</strong>: domande dal pubblico, raccolta contatti, next step.</li>
+          <li><strong>27–30</strong>: clip social, foto, chiusura e rilancio successivo.</li>
+        </ul>
+      </article>
+    </div>
+
+    <details style="margin-top:18px">
+      <summary>Note stand e materiali social</summary>
+      <div class="note-toolbar">
+        <button class="btn" data-add-note data-target="notes-stand">+ nuova nota</button>
+      </div>
+      <div id="notes-stand" class="notes-area" data-notes-area></div>
+    </details>
+  </section>
+
+  <section id="plenaria">
+    <div class="section-head">
+      <div>
+        <div class="tag">Sezione 3</div>
+        <h2>Seduta plenaria</h2>
+        <p>
+          La plenaria con Valeria Lazzaroli deve posizionare ENIA come soggetto credibile, utile e pubblico:
+          non solo visione, ma presidio di ricerca, servizi, etica, consapevolezza e costruzione di alleanze.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Obiettivo narrativo</h3>
+        <ul class="list">
+          <li><strong>Primario</strong>: dare autorevolezza istituzionale alla presenza ENIA dentro ForumPA.</li>
+          <li class="alt"><strong>Secondario</strong>: mostrare che l’AI nella PA richiede governo del ciclo di vita, non solo adozione tecnologica.</li>
+          <li><strong>Terziario</strong>: accreditare ENIA come interlocutore per amministrazioni, partner e territori.</li>
+        </ul>
+
+        <h4>Sceneggiatura — Ipotesi 1</h4>
+        <ul class="list">
+          <li>Intervento di apertura della presidente con tesi chiara: l’AI pubblica deve essere affidabile, comprensibile e verificabile.</li>
+          <li>Tre passaggi: identità ENIA, responsabilità verso i cittadini, servizio concreto alle PA.</li>
+        </ul>
+
+        <h4>Sceneggiatura — Ipotesi 2</h4>
+        <ul class="list">
+          <li>Dialogo con moderatore istituzionale: “quale Paese vogliamo costruire con l’AI?”, “quali condizioni servono alle PA?”, “che ruolo ha ENIA?”</li>
+          <li>Chiusura con invito alla collaborazione e ai tavoli di lavoro successivi.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Tracce contenutistiche</h3>
+        <ul class="list">
+          <li><strong>Etica e diritti</strong>: centralità dei cittadini, difesa dei consumatori, trasparenza e accountability.</li>
+          <li class="alt"><strong>Governance</strong>: organizzazione, controllo, rischi, qualità del dato, sicurezza, privacy, formazione.</li>
+          <li><strong>Servizi</strong>: supporto alle scelte di PA deboli, accompagnamento a procurement, sandbox e giurie di comunità.</li>
+          <li class="ok"><strong>Alleanze</strong>: enti di ricerca, partner tecnologici, consulenza, reti territoriali e stakeholder pubblici.</li>
+        </ul>
+
+        <details>
+          <summary>Note plenaria</summary>
+          <div class="note-toolbar">
+            <button class="btn" data-add-note data-target="notes-plenaria">+ nuova nota</button>
+          </div>
+          <div id="notes-plenaria" class="notes-area" data-notes-area></div>
+        </details>
+      </div>
+    </div>
+  </section>
+
+  <section id="fonti">
+    <div class="section-head">
+      <div>
+        <div class="tag">Sezione 4</div>
+        <h2>Normativa, allegati e materiali</h2>
+        <p>
+          Qui puoi collegare documenti esterni, folder cloud, schede offline, PDF, slide, rassegne, video e materiali social.
+          Questa parte è pensata per restare utile anche quando il contenuto si arricchisce nel tempo.
+        </p>
+      </div>
+    </div>
+
+    <div class="grid">
+      <div class="card">
+        <h3>Quadro normativo da richiamare</h3>
+        <ul class="list">
+          <li><strong>AI Act UE</strong>: approccio basato sul rischio, con obblighi rilevanti per trasparenza, governance, documentazione, supervisione umana e conformità.</li>
+          <li class="alt"><strong>Linee guida AgID</strong>: adozione, acquisto, sviluppo e procurement di sistemi AI nella PA; utile richiamo a organizzazione, valutazione e impatto.</li>
+          <li><strong>Responsabilità amministrativa</strong>: attenzione a dati, sicurezza, privacy, verificabilità delle scelte e tracciabilità del processo decisionale.</li>
+          <li class="ok"><strong>Formazione e alfabetizzazione</strong>: competenze interne come prerequisito per un uso serio e sostenibile dell’AI.</li>
+        </ul>
+      </div>
+
+      <div class="card">
+        <h3>Allegati e link</h3>
+        <div class="attachments" id="attachments-area">
+          <div class="attachment-item">
+            <div>
+              <input class="inputline" placeholder="Titolo allegato o materiale" />
+              <textarea class="auto-note" placeholder="Incolla qui il link a Drive, OneDrive, YouTube, PDF o cartella condivisa"></textarea>
+            </div>
+            <button class="btn" data-remove-row>Rimuovi</button>
+          </div>
+        </div>
+        <div class="toolbar">
+          <button class="btn" id="add-attachment">+ nuovo allegato</button>
+          <button class="btn" id="save-now">Salva localmente</button>
+          <button class="btn" id="reset-local">Reset note</button>
+        </div>
+        <p class="mini">Suggerimento: usa nomi coerenti tipo <em>FORUMPA_ENIA_Plenaria_v1.pdf</em>, <em>FORUMPA_ENIA_Stand_Giorno1.mp4</em>, <em>FORUMPA_ENIA_Normativa_2026.docx</em>.</p>
+      </div>
+    </div>
+  </section>
+
+  <section>
+    <div class="card">
+      <h3>Spazio note generali</h3>
+      <p class="muted">Questa area è pensata per raccogliere appunti trasversali, idee emerse nelle riunioni e modifiche da trasferire nelle sezioni corrispondenti.</p>
+      <details open>
+        <summary>Note generali di lavoro</summary>
+        <div class="note-toolbar">
+          <button class="btn" data-add-note data-target="notes-general">+ nuova nota</button>
+        </div>
+        <div id="notes-general" class="notes-area" data-notes-area></div>
+      </details>
+    </div>
+  </section>
+
+</main>
+
+<footer class="wrap footer">
+  Pagina workspace pronta per aggiornamenti continui, con contenuti editabili, note dinamiche e allegati esterni.
+</footer>
+
+<script>
+  const root = document.documentElement;
+  const themeKey = 'forumpa-enia-theme';
+  const saveKey = 'forumpa-enia-workspace-v1';
+
+  const savedTheme = localStorage.getItem(themeKey);
+  if(savedTheme) root.setAttribute('data-theme', savedTheme);
+
+  document.querySelector('[data-theme-toggle]')?.addEventListener('click', () => {
+    const next = root.getAttribute('data-theme') === 'dark' ? 'light' : 'dark';
+    root.setAttribute('data-theme', next);
+    localStorage.setItem(themeKey, next);
+  });
+
+  function autoResize(el){
+    el.style.height = 'auto';
+    el.style.height = el.scrollHeight + 'px';
+  }
+
+  function enhanceTextarea(el){
+    autoResize(el);
+    el.addEventListener('input', () => {
+      autoResize(el);
+      if(el.dataset.persist !== 'false') saveState();
+    });
+  }
+
+  document.querySelectorAll('textarea').forEach(enhanceTextarea);
+
+  function createNote(value=''){
+    const block = document.createElement('div');
+    block.className = 'note-block';
+    block.innerHTML = `
+      <div class="note-head">
+        <span class="note-title">Nota</span>
+        <button class="btn" data-delete-note>Elimina</button>
+      </div>
+      <textarea class="notes" placeholder="Scrivi qui un appunto...">${value}</textarea>
+    `;
+    const ta = block.querySelector('textarea');
+    enhanceTextarea(ta);
+    return block;
+  }
+
+  document.querySelectorAll('[data-add-note]').forEach(btn=>{
+    btn.addEventListener('click', ()=>{
+      const target = document.getElementById(btn.dataset.target);
+      if(target){
+        target.appendChild(createNote());
+        saveState();
+      }
+    });
+  });
+
+  document.addEventListener('click', e=>{
+    if(e.target.matches('[data-delete-note]')){
+      e.target.closest('.note-block')?.remove();
+      saveState();
+    }
+    if(e.target.matches('[data-remove-row]')){
+      e.target.closest('.attachment-item')?.remove();
+      saveState();
+    }
+  });
+
+  document.querySelectorAll('.toggle').forEach(button => {
+    button.addEventListener('click', () => {
+      const card = button.closest('.accordion');
+      const isOpen = card.classList.toggle('open');
+      button.setAttribute('aria-expanded', String(isOpen));
+      const arrow = button.querySelector('span:last-child');
+      if(arrow) arrow.textContent = isOpen ? '▾' : '▸';
+    });
+  });
+
+  document.getElementById('add-attachment')?.addEventListener('click', () => {
+    const area = document.getElementById('attachments-area');
+    const row = document.createElement('div');
+    row.className = 'attachment-item';
+    row.innerHTML = `
+      <div>
+        <input class="inputline" placeholder="Titolo allegato o materiale" />
+        <textarea class="auto-note" placeholder="Incolla qui il link a Drive, OneDrive, YouTube, PDF o cartella condivisa"></textarea>
+      </div>
+      <button class="btn" data-remove-row>Rimuovi</button>
+    `;
+    area.appendChild(row);
+    row.querySelectorAll('textarea').forEach(enhanceTextarea);
+    row.querySelectorAll('input').forEach(el => el.addEventListener('input', saveState));
+    saveState();
+  });
+
+  document.getElementById('save-now')?.addEventListener('click', saveState);
+
+  document.getElementById('reset-local')?.addEventListener('click', () => {
+    if(confirm('Vuoi cancellare tutte le note salvate localmente?')){
+      localStorage.removeItem(saveKey);
+      location.reload();
+    }
+  });
+
+  function collectNotes(area){
+    return [...area.querySelectorAll('.note-block')].map(b => b.querySelector('textarea')?.value || '');
+  }
+
+  function loadState(){
+    try{
+      const data = JSON.parse(localStorage.getItem(saveKey) || '{}');
+
+      const map = [
+        ['notes-evento-1','evento1'],
+        ['notes-evento-2','evento2'],
+        ['notes-stand','stand'],
+        ['notes-plenaria','plenaria'],
+        ['notes-general','general']
+      ];
+      map.forEach(([id,key])=>{
+        const area = document.getElementById(id);
+        if(area && data.notes?.[key]?.length){
+          area.innerHTML = '';
+          data.notes[key].forEach(v => area.appendChild(createNote(v)));
+        }
+      });
+
+      if(data.attachments?.length){
+        const area = document.getElementById('attachments-area');
+        area.innerHTML = '';
+        data.attachments.forEach(item => {
+          const row = document.createElement('div');
+          row.className = 'attachment-item';
+          row.innerHTML = `
+            <div>
+              <input class="inputline" value="${(item.title||'').replace(/"/g,'&quot;')}" placeholder="Titolo allegato o materiale" />
+              <textarea class="auto-note" placeholder="Incolla qui il link a Drive, OneDrive, YouTube, PDF o cartella condivisa">${item.link || ''}</textarea>
+            </div>
+            <button class="btn" data-remove-row>Rimuovi</button>
+          `;
+          area.appendChild(row);
+          row.querySelectorAll('textarea').forEach(enhanceTextarea);
+          row.querySelectorAll('input').forEach(el => el.addEventListener('input', saveState));
+        });
+      }
+    }catch(e){}
+  }
+
+  function saveState(){
+    const data = {
+      notes:{
+        evento1: collectNotes(document.getElementById('notes-evento-1') || document),
+        evento2: collectNotes(document.getElementById('notes-evento-2') || document),
+        stand: collectNotes(document.getElementById('notes-stand') || document),
+        plenaria: collectNotes(document.getElementById('notes-plenaria') || document),
+        general: collectNotes(document.getElementById('notes-general') || document)
+      },
+      attachments:[...document.querySelectorAll('#attachments-area .attachment-item')].map(row => ({
+        title: row.querySelector('input')?.value || '',
+        link: row.querySelector('textarea')?.value || ''
+      }))
+    };
+    localStorage.setItem(saveKey, JSON.stringify(data));
+  }
+
+  loadState();
+  document.querySelectorAll('input, textarea').forEach(el => {
+    el.addEventListener('input', saveState);
+  });
+</script>
+</body>
+</html>
